@@ -9,6 +9,8 @@ package controllers {
 
 	public class Database {
 
+		protected var mainConn:SQLConnection = new SQLConnection();
+
 		public function Database() {
 			trace("database controller initialized");
 			var folder:File = File.applicationStorageDirectory; 
@@ -49,9 +51,16 @@ package controllers {
 
 			conn.close();
 			trace("database closed for initial setup SQL");
+						
+			//create a new connection for async operations
+			mainConn.addEventListener(SQLEvent.OPEN, openHandler); 
+			mainConn.openAsync(dbFile);
 			
 		}
 
+		private function openHandler(e:SQLEvent):void {
+			trace("async connection is open and we are ready for business...");
+		}
 	}
 
 }
