@@ -3,6 +3,8 @@ package controllers {
 	import flash.data.SQLConnection; 
 	import flash.events.SQLErrorEvent; 
 	import flash.events.SQLEvent; 
+	import flash.data.SQLStatement;
+	
 	import flash.filesystem.File;
 
 	public class Database {
@@ -17,7 +19,34 @@ package controllers {
 			conn.open(dbFile); 
 			trace("database opened for initial setup SQL");
 			
-			//do stuff
+			//do our setup
+
+			//grudgetargets are the people we have grudges against. I'm using a generic
+			//"target" since you may want to have a grudge against something vague like, oh,
+			//the world at large
+			var createStmt:SQLStatement = new SQLStatement(); 
+			createStmt.sqlConnection = conn; 
+	
+			var sql:String =  
+				"CREATE TABLE IF NOT EXISTS grudgetargets (" +  
+				"    id INTEGER PRIMARY KEY AUTOINCREMENT, " +  
+				"    name TEXT " +  
+				")"; 
+			createStmt.text = sql; 
+			createStmt.execute();
+			
+			//grudges are the actual things that pissed you off. They have a FK to the
+			//target and a create date
+			sql =  
+				"CREATE TABLE IF NOT EXISTS grudges (" +  
+				"    id INTEGER PRIMARY KEY AUTOINCREMENT, " +  
+				"    reason TEXT, " +  
+				"    targetidfk INTEGER, " +
+				"    created DATE " +
+				")"; 
+			createStmt.text = sql; 
+			createStmt.execute();
+
 			conn.close();
 			trace("database closed for initial setup SQL");
 			
