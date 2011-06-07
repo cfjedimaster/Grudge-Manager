@@ -4,7 +4,7 @@ package controllers {
 	import flash.events.SQLErrorEvent; 
 	import flash.events.SQLEvent; 
 	import flash.data.SQLStatement;
-	
+	import flash.data.SQLResult;
 	import flash.filesystem.File;
 
 	public class Database {
@@ -15,11 +15,11 @@ package controllers {
 			trace("database controller initialized");
 			var folder:File = File.applicationStorageDirectory; 
 			var dbFile:File = folder.resolvePath("grudge.db");
-
+			
 			//initial connection handles DB setup so it's not async
 			var conn:SQLConnection = new SQLConnection();
 			conn.open(dbFile); 
-			trace("database opened for initial setup SQL");
+			trace("database opened for initial setup SQL - location is "+dbFile.nativePath);
 			
 			//do our setup
 
@@ -52,15 +52,22 @@ package controllers {
 			conn.close();
 			trace("database closed for initial setup SQL");
 						
-			//create a new connection for async operations
-			mainConn.addEventListener(SQLEvent.OPEN, openHandler); 
-			mainConn.openAsync(dbFile);
+			//create a new connection for normal operations
+			mainConn.open(dbFile);
 			
 		}
-
-		private function openHandler(e:SQLEvent):void {
-			trace("async connection is open and we are ready for business...");
+		
+		public function execSQL(sql:String):Array {
+			trace("execSQL: "+sql);
+			var statement:SQLStatement = new SQLStatement();
+			statement.sqlConnection=mainConn;
+			statement.text=sql;
+			statement.execute();
+			var sqlresult:SQLResult = statement.getResult();
+			trace("Result size is "+sqlresult.data.length);
+			return sqlresult.data;
 		}
+
 	}
 
 }

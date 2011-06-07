@@ -3,6 +3,7 @@
 							xmlns:s="library://ns.adobe.com/flex/spark" firstView="views.MainHomeView" xmlns:controllers="controllers.*">
 	<fx:Declarations>
 		<controllers:Database id="databaseController" />
+		<controllers:GrudgeManager id="grudgeController" databaseController="{databaseController}" />
 	</fx:Declarations>
 	
 	<fx:Script>

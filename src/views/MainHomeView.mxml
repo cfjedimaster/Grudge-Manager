@@ -3,14 +3,23 @@
 		xmlns:s="library://ns.adobe.com/flex/spark" title="Grudge Manager" viewActivate="init(event)">
 	<fx:Script>
 	<![CDATA[
+	import controllers.GrudgeManager;	
+	import mx.core.FlexGlobals;
 	import spark.events.ViewNavigatorEvent;
+	import mx.collections.ArrayCollection;
+	protected var gmController:GrudgeManager;
 		
 	protected function init(event:ViewNavigatorEvent):void {
 		//going to do a SQL call just to test my hookup
+		gmController = FlexGlobals.topLevelApplication.grudgeController;
+		var targets:Array = gmController.getTargets();
+		grudgeTargetList.dataProvider = new ArrayCollection(targets);
 	}		
 	]]>
 	</fx:Script>
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
+	
+	<s:List id="grudgeTargetList" labelField="name" width="100%" height="100%" />
 </s:View>
